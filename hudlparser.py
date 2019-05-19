@@ -1,62 +1,64 @@
+from typing import List
+
 from lxml import etree
-from vbaction import *
-from vbmatch import *
+import vbaction
+import vbmatch
 
 
 def make_action(moment_dict, vb_id):
     # print(moment_dict)
     if moment_dict["type"] == "beginMatch":
-        begin_match = BeginMatch(vb_id, int(moment_dict["startTimeMs"]))
+        begin_match = vbaction.BeginMatch(vb_id, int(moment_dict["startTimeMs"]))
         return begin_match
     if moment_dict["type"] == "endMatch":
-        end_match = EndMatch(vb_id, int(moment_dict["startTimeMs"]))
+        end_match = vbaction.EndMatch(vb_id, int(moment_dict["startTimeMs"]))
         return end_match
     if moment_dict["type"] == "beginSet":
-        begin_set = BeginSet(vb_id, int(moment_dict["startTimeMs"]))
+        begin_set = vbaction.BeginSet(vb_id, int(moment_dict["startTimeMs"]))
         return begin_set
     if moment_dict["type"] == "endSet":
-        end_set = EndSet(vb_id, int(moment_dict["startTimeMs"]))
+        end_set = vbaction.EndSet(vb_id, int(moment_dict["startTimeMs"]))
         return end_set
     if moment_dict["type"] == "pass":
-        vb_pass = Pass(vb_id,
-                       int(moment_dict["startTimeMs"]),
-                       int(moment_dict["team"]),
-                       int(moment_dict["rotation"]),
-                       int(moment_dict["playerJersey"]),
-                       int(moment_dict["quality"]))
+        vb_pass = vbaction.Pass(vb_id,
+                                int(moment_dict["startTimeMs"]),
+                                int(moment_dict["team"]),
+                                int(moment_dict["rotation"]),
+                                int(moment_dict["playerJersey"]),
+                                int(moment_dict["quality"]))
         return vb_pass
     if moment_dict["type"] == "attack":
         result = 0 if "result" not in moment_dict else 1 if moment_dict["result"] == "kill" else -1
-        attack = Attack(vb_id,
-                        int(moment_dict["startTimeMs"]),
-                        int(moment_dict["team"]),
-                        int(moment_dict["rotation"]),
-                        int(moment_dict["playerJersey"]),
-                        result)
+        attack = vbaction.Attack(vb_id,
+                                 int(moment_dict["startTimeMs"]),
+                                 int(moment_dict["team"]),
+                                 int(moment_dict["rotation"]),
+                                 int(moment_dict["playerJersey"]),
+                                 result)
         return attack
     if moment_dict["type"] == "scoreAdjustment":
-        score_adjustment = ScoreAdjustment(vb_id,
-                                           int(moment_dict["startTimeMs"]),
-                                           int(moment_dict["team"]),
-                                           int(moment_dict["amount"]))
+        score_adjustment = vbaction.ScoreAdjustment(vb_id,
+                                                    int(moment_dict["startTimeMs"]),
+                                                    int(moment_dict["team"]),
+                                                    int(moment_dict["amount"]))
         return score_adjustment
     if moment_dict["type"] == "set":
         result = 0 if "result" not in moment_dict else 1 if moment_dict["result"] == "assist" else -1
-        vb_set = Set(vb_id,
-                     int(moment_dict["startTimeMs"]),
-                     int(moment_dict["team"]),
-                     int(moment_dict["rotation"]),
-                     int(moment_dict["playerJersey"]),
-                     result)
+        vb_set = vbaction.Set(vb_id,
+                              int(moment_dict["startTimeMs"]),
+                              int(moment_dict["team"]),
+                              int(moment_dict["rotation"]),
+                              int(moment_dict["playerJersey"]),
+                              result)
         return vb_set
     if moment_dict["type"] == "serve":
         result = 0 if "result" not in moment_dict else 1 if moment_dict["result"] == "ace" else -1
-        vb_serve = Serve(vb_id,
-                         int(moment_dict["startTimeMs"]),
-                         int(moment_dict["team"]),
-                         int(moment_dict["rotation"]),
-                         int(moment_dict["playerJersey"]),
-                         result)
+        vb_serve = vbaction.Serve(vb_id,
+                                  int(moment_dict["startTimeMs"]),
+                                  int(moment_dict["team"]),
+                                  int(moment_dict["rotation"]),
+                                  int(moment_dict["playerJersey"]),
+                                  result)
         return vb_serve
 
     if moment_dict["type"] == "block":
@@ -69,50 +71,71 @@ def make_action(moment_dict, vb_id):
                     result = 2
                 else:
                     result = -1
-        vb_block = Block(vb_id,
-                         int(moment_dict["startTimeMs"]),
-                         int(moment_dict["team"]),
-                         int(moment_dict["rotation"]),
-                         int(moment_dict["playerJersey"]),
-                         result)
+        vb_block = vbaction.Block(vb_id,
+                                  int(moment_dict["startTimeMs"]),
+                                  int(moment_dict["team"]),
+                                  int(moment_dict["rotation"]),
+                                  int(moment_dict["playerJersey"]),
+                                  result)
         return vb_block
 
     if moment_dict["type"] == "dig":
         result = 1 if "result" not in moment_dict else -1 if moment_dict["result"] == "error" else 0
-        vb_dig = Dig(vb_id,
-                     int(moment_dict["startTimeMs"]),
-                     int(moment_dict["team"]),
-                     int(moment_dict["rotation"]),
-                     int(moment_dict["playerJersey"]),
-                     result)
+        vb_dig = vbaction.Dig(vb_id,
+                              int(moment_dict["startTimeMs"]),
+                              int(moment_dict["team"]),
+                              int(moment_dict["rotation"]),
+                              int(moment_dict["playerJersey"]),
+                              result)
         return vb_dig
 
     if moment_dict["type"] == "freeBall":
-        free_ball = FreeBall(vb_id,
-                             int(moment_dict["startTimeMs"]),
-                             int(moment_dict["team"]),
-                             int(moment_dict["rotation"]),
-                             int(moment_dict["playerJersey"]),
-                             int(moment_dict["quality"]))
+        free_ball = vbaction.FreeBall(vb_id,
+                                      int(moment_dict["startTimeMs"]),
+                                      int(moment_dict["team"]),
+                                      int(moment_dict["rotation"]),
+                                      int(moment_dict["playerJersey"]),
+                                      int(moment_dict["quality"]))
         return free_ball
 
     if moment_dict["type"] == "substitution":
-        substitution = Substitution(vb_id,
-                                    int(moment_dict["startTimeMs"]),
-                                    int(moment_dict["team"]),
-                                    int(moment_dict["playerIn"]),
-                                    int(moment_dict["playerOut"]))
+        substitution = vbaction.Substitution(vb_id,
+                                             int(moment_dict["startTimeMs"]),
+                                             int(moment_dict["team"]),
+                                             int(moment_dict["playerIn"]),
+                                             int(moment_dict["playerOut"]))
         return substitution
 
 
-def play_moments(moments, teams):
+def calculate_rotations(moments):
+    current_set = 0
+    active_set = 0
+    rotations: List[vbmatch.Rotation] = []
+    for moment in moments:
+        if isinstance(moment, vbaction.BeginSet):
+            current_set += 1
+            active_set = current_set
+            rotations.append(vbmatch.Rotation())
+
+        if isinstance(moment,vbaction.Serve):
+            if not rotations[active_set].is_set():
+                rotations[active_set].add_player(moment.rotation, moment.jersey_no)
+        if isinstance(moment, vbaction.EndSet):
+            active_set = -1
+
+    return rotations
+
+
+
+def play_moments(moments, teams, starting_rotation, server_first):
     vb_match = None
     vb_set = None
     for moment in moments:
-        if isinstance(moment, BeginMatch):
-            vb_match = Match(match_id, teams[0], teams[1])
-        if isinstance(moment, BeginSet):
-            vb_set = vbset_id, starting_rotation, vb_match, rotation_no = 1, serve_first=True, team_score1=0, team_score2=0):
+        if isinstance(moment, vbaction.BeginMatch):
+            vb_match = vbmatch.Match(match_id, teams[0], teams[1])
+        if isinstance(moment, vbaction.BeginSet):
+            vb_set = vbmatch.VBSet(starting_rotation, vb_match, 1, 0, 0))
+
 
 
 
@@ -143,7 +166,9 @@ def parse_xml(xml_file: object) -> object:
             vbaction = make_action(moment_dict, i)
             print(vbaction)
             moments.append(vbaction)
-    play_moments(moments, teams)
+
+    rotations = calculate_rotations(moments)
+    play_moments(moments, teams, rotations)
 
 
 if __name__ == "__main__":

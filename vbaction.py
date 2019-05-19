@@ -141,6 +141,14 @@ class Serve(Action):
         self._jersey_no = jersey
         self._result = result
 
+    @property
+    def rotation(self):
+        return self._rotation
+
+    @property
+    def jersey_no(self):
+        return self._jersey_no
+
     def __str__(self):
         action_str = "%s;%s;team;%s;rotation;%s;jersey;%s;result;%s" % \
                      (Action.__str__(self),

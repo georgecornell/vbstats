@@ -19,27 +19,33 @@ class Match:
 
 
 class Rotation:
-    def __init__(self, pos_1, pos_2, pos_3, pos_4, pos_5, pos_6, libero):
-        self._id = None
-        self._pos_1 = pos_1
-        self._pos_2 = pos_2
-        self._pos_3 = pos_3
-        self._pos_4 = pos_4
-        self._pos_5 = pos_5
-        self._pos_6 = pos_6
-        self._libero = libero
+    def __init__(self, jersey_1=-1, jersey_2=-1, jersey_3=-1, jersey_4=-1, jersey_5=-1, jersey_6=-1):
+        self._rotation = [jersey_1, jersey_2, jersey_3, jersey_4, jersey_5, jersey_6]
+
+    def add_player(self, pos, jersey_no):
+        assert isinstance(jersey_no, int)
+        assert (pos < 6)
+        self._rotation[pos] = jersey_no
+
+    def is_set(self, pos, jersey_no):
+        assert isinstance(jersey_no, int)
+        assert (pos < 6)
+        return self._rotation[pos] > 0
 
     def rotate(self):
-        # returns a new rotation
-        pass
+        return Rotation(self._rotation[1:] + self._rotation[:1])
 
-    def substitution(self):
-        # returns a new rotation
-        pass
-
+    def substitution(self, current_player_no, new_player_no):
+        new_rotation = []
+        for jersey in self._rotation:
+            if jersey != current_player_no:
+                new_rotation.append(jersey)
+            else:
+                new_rotation.append(new_player_no)
+        return Rotation(new_rotation)
 
 class VBSet:
-    def __init__(self, starting_rotation, vb_match, rotation_no = 1, serve_first=True, team_score1=0, team_score2=0):
+    def __init__(self, starting_rotation, vb_match, rotation_no = 1, team_score1=0, team_score2=0):
         self._id = None
         self._rotation = starting_rotation
         self._rotation_no = rotation_no
